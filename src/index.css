@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@theme {
+  --font-body: 'Inter', sans-serif;
+
+  /* Dark blue-black theme */
+  --color-bg-primary:   #0a0a0f;
+  --color-bg-secondary: #111118;
+  --color-bg-card:      #16161f;
+  --color-bg-input:     #1e1e2a;
+  --color-border:       #2a2a3a;
+  --color-blue:         #3b82f6;
+  --color-blue-hover:   #2563eb;
+  --color-blue-soft:    #1d3461;
+}
+/* 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+} */
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #0a0a0f;
+  color: #ffffff;
+}
+
+@keyframes ping-once {
+  0%   { transform: scale(0.5); opacity: 0; }
+  30%  { transform: scale(1.2); opacity: 1; }
+  60%  { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1); opacity: 0; }
+}
+.animate-ping-once {
+  animation: ping-once 0.8s ease-out forwards;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #0a0a0f; }
+::-webkit-scrollbar-thumb { background: #2a2a3a; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
