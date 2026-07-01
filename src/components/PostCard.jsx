@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Heart, MessageCircle, Send, Bookmark, MoreHorizontal } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import useLikes from '../hooks/useLikes';
+import useCreatePost from '../hooks/useCreatePost';
 
 const PostCard = ({ post, onLikeToggle }) => {
   const { user } = useAuth();
@@ -13,6 +14,8 @@ const PostCard = ({ post, onLikeToggle }) => {
   const [likeCount, setLikeCount] = useState(post.likes?.length || 0);
   const [localLiked, setLocalLiked] = useState(liked);
   const [showHeartAnim, setShowHeartAnim] = useState(false);
+  const [showOptions, setShowOptions] = useState(false);
+  const { deletePost } = useCreatePost();
 
   const handleLike = async () => {
     const newLiked = !localLiked;
@@ -72,9 +75,66 @@ const PostCard = ({ post, onLikeToggle }) => {
           </div>
         </div>
 
-        <button className="text-gray-400 hover:text-white transition">
-          <MoreHorizontal size={18} />
-        </button>
+        <div className="relative">
+          <button
+            onClick={() => setShowOptions(!showOptions)}
+            className="text-gray-400 hover:text-white transition"
+          >
+            <MoreHorizontal size={18} />
+          </button>
+
+          {/* Options dropdown */}
+          {showOptions && (
+            <div className="absolute right-0 top-8 bg-[#16161f] border border-[#2a2a3a] rounded-xl shadow-xl z-10 overflow-hidden min-w-36">
+              {/* Only show delete for own posts */}
+              {post.profiles?.id === user?.id && (
+                <button
+                  onClick={() => {
+                    setShowOptions(false);
+                    toast((t) => (
+                      <div className="flex flex-col gap-3">
+                        <p className="font-medium text-sm">Delete this post?</p>
+                        <p className="text-xs text-gray-400">This cannot be undone.</p>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={async () => {
+                              toast.dismiss(t.id);
+                              try {
+                                await deletePost(post.id, post.image_url);
+                                toast.success('Post deleted');
+                                if (onLikeToggle) onLikeToggle();
+                              } catch {
+                                toast.error('Failed to delete post');
+                              }
+                            }}
+                            className="flex-1 bg-red-500 text-white text-xs py-1.5 rounded-lg"
+                          >
+                            Delete
+                          </button>
+                          <button
+                            onClick={() => toast.dismiss(t.id)}
+                            className="flex-1 border border-[#2a2a3a] text-gray-400 text-xs py-1.5 rounded-lg"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ), { duration: Infinity });
+                  }}
+                  className="w-full text-left px-4 py-3 text-sm text-red-400 hover:bg-[#1e1e2a] transition"
+                >
+                  Delete Post
+                </button>
+              )}
+              <button
+                onClick={() => setShowOptions(false)}
+                className="w-full text-left px-4 py-3 text-sm text-gray-300 hover:bg-[#1e1e2a] transition"
+              >
+                Cancel
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Image */}

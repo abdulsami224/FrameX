@@ -3,7 +3,10 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Auth from './pages/Auth';
-import Home from './pages/Home'; // ← add this
+import Home from './pages/Home'; 
+import CreatePost from './pages/CreatePost';
+import Profile from './pages/Profile';
+import EditProfile from './pages/EditProfile';
 
 function App() {
   return (
@@ -26,6 +29,24 @@ function App() {
           <Route path="/" element={
             <ProtectedRoute>
               <Home />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/create" element={
+            <ProtectedRoute>
+              <CreatePost />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/profile/:username" element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/edit-profile" element={
+            <ProtectedRoute>
+              <EditProfile />
             </ProtectedRoute>
           } />
         </Routes>
