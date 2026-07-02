@@ -7,6 +7,8 @@ import Home from './pages/Home';
 import CreatePost from './pages/CreatePost';
 import Profile from './pages/Profile';
 import EditProfile from './pages/EditProfile';
+import PostDetail from './pages/PostDetail';
+import Explore from './pages/Explore';
 
 function App() {
   return (
@@ -47,6 +49,18 @@ function App() {
           <Route path="/edit-profile" element={
             <ProtectedRoute>
               <EditProfile />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/post/:id" element={
+            <ProtectedRoute>
+              <PostDetail />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/explore" element={
+            <ProtectedRoute>
+              <Explore />
             </ProtectedRoute>
           } />
         </Routes>
