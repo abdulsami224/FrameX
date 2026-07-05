@@ -4,6 +4,7 @@ import { Heart, MessageCircle, Send, Bookmark, MoreHorizontal } from 'lucide-rea
 import { useAuth } from '../context/AuthContext';
 import useLikes from '../hooks/useLikes';
 import useCreatePost from '../hooks/useCreatePost';
+import useSavePost from '../hooks/useSavePost';
 
 const PostCard = ({ post, onLikeToggle }) => {
   const { user } = useAuth();
@@ -16,6 +17,7 @@ const PostCard = ({ post, onLikeToggle }) => {
   const [showHeartAnim, setShowHeartAnim] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const { deletePost } = useCreatePost();
+  const { isSaved, toggleSave } = useSavePost(post.id);
 
   const handleLike = async () => {
     const newLiked = !localLiked;
@@ -179,8 +181,17 @@ const PostCard = ({ post, onLikeToggle }) => {
             <Send size={22} className="text-white" />
           </button>
         </div>
-        <button className="transition-transform hover:scale-110">
-          <Bookmark size={22} className="text-white" />
+        <button
+          onClick={toggleSave}
+          className="transition-transform hover:scale-110"
+        >
+          <Bookmark
+            size={22}
+            className={isSaved
+              ? 'text-white fill-white'
+              : 'text-white'
+            }
+          />
         </button>
       </div>
 

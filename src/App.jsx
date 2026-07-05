@@ -9,6 +9,8 @@ import Profile from './pages/Profile';
 import EditProfile from './pages/EditProfile';
 import PostDetail from './pages/PostDetail';
 import Explore from './pages/Explore';
+import SavedPosts from './pages/SavedPosts';
+import Notifications from './pages/Notifications';
 
 function App() {
   return (
@@ -61,6 +63,18 @@ function App() {
           <Route path="/explore" element={
             <ProtectedRoute>
               <Explore />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/saved" element={
+            <ProtectedRoute>
+              <SavedPosts />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/notifications" element={
+            <ProtectedRoute>
+              <Notifications />
             </ProtectedRoute>
           } />
         </Routes>

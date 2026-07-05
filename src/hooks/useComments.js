@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 
@@ -7,16 +7,38 @@ const useComments = (postId) => {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const channelRef = useRef(null); 
 
     useEffect(() => {
-        if (!postId) return;
+      if (!postId) return;
 
-        fetchComments();
-        const channel = subscribeToComments(); // ← store reference
+      fetchComments();
 
-        return () => {
-            if (channel) channel.unsubscribe(); // ← cleanup correct channel
-        };
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
+        channelRef.current = null;
+      }
+
+      channelRef.current = supabase
+        .channel(`comments-${postId}-${Date.now()}`)
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'comments',
+            filter: `post_id=eq.${postId}`
+          },
+          () => fetchComments()
+        )
+        .subscribe();
+
+      return () => {
+        if (channelRef.current) {
+          supabase.removeChannel(channelRef.current);
+          channelRef.current = null;
+        }
+      };
     }, [postId]);
 
   const fetchComments = async () => {

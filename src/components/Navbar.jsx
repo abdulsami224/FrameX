@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Home, Search, PlusSquare, Heart, LogOut, Compass } from 'lucide-react';
+import { Home, Search, PlusSquare, Heart, LogOut, Compass, Bookmark } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import useNotifications from '../hooks/useNotifications';
+
 
 const Navbar = () => {
   const { user, profile, logout } = useAuth();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { unreadCount } = useNotifications();
 
   const handleLogout = async () => {
     await logout();
@@ -31,7 +34,21 @@ const Navbar = () => {
           <NavLink icon={Home} label="Home" to="/" />
           <NavLink icon={Compass} label="Explore" to="/explore" />
           <NavLink icon={PlusSquare} label="Create" to="/create" />
-          <NavLink icon={Heart} label="Notifications" to="/notifications" />
+          <Link
+            to="/notifications"
+            className="flex items-center gap-4 px-3 py-3 rounded-xl hover:bg-[#16161f] transition text-gray-300 hover:text-white relative"
+          >
+            <div className="relative">
+              <Heart size={22} />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 bg-blue-600 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
+            </div>
+            <span className="text-sm font-medium">Notifications</span>
+          </Link>
+          <NavLink icon={Bookmark} label="Saved" to="/saved" />
 
           {/* Profile link */}
           <Link
@@ -78,7 +95,15 @@ const Navbar = () => {
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[#0a0a0f] border-t border-[#2a2a3a] px-6 py-3 z-40 flex items-center justify-between">
         <Link to="/"><Home size={24} className="text-white" /></Link>
         <Link to="/explore"><Search size={24} className="text-white" /></Link>
-        <Link to="/notifications"><Heart size={24} className="text-white" /></Link>
+        <Link to="/notifications" className="relative">
+          <Heart size={24} className="text-white" />
+          {unreadCount > 0 && (
+            <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </span>
+          )}
+        </Link>
+        <Link to="/saved"><Bookmark size={24} className="text-white" /></Link>
         <Link to={`/profile/${profile?.username}`}>
           <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center overflow-hidden">
             {profile?.avatar_url ? (
